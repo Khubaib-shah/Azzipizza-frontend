@@ -51,7 +51,7 @@ const SupportButton = () => {
 
               <div className="flex flex-col gap-2 pt-2">
                 <a
-                  href="tel:+1234567890"
+                  href="tel:393713985810"
                   className="flex items-center justify-between group p-3 border border-gray-200 rounded-xl hover:border-red-600 hover:bg-red-50 transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
@@ -63,7 +63,7 @@ const SupportButton = () => {
                   <ChevronRight className="w-3 h-3 text-red-600 group-hover:translate-x-1 transition-transform" />
                 </a>
                 <a
-                  href="mailto:support@azzipizza.com"
+                  href="https://wa.me/393713985810"
                   className="flex items-center justify-between group p-3 border border-gray-200 rounded-xl hover:border-red-600 hover:bg-red-50 transition-all cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
