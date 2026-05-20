@@ -1,0 +1,341 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CraveBite - Track Your Order</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#f48c25",
+              "background-light": "#f8f7f5",
+              "background-dark": "#221910",
+            },
+            fontFamily: {
+              display: ["Plus Jakarta Sans"],
+            },
+            borderRadius: {
+              DEFAULT: "1rem",
+              lg: "2rem",
+              xl: "3rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased"
+  >
+    <div
+      class="relative flex min-h-screen w-full max-w-md mx-auto flex-col bg-background-light dark:bg-background-dark shadow-2xl overflow-x-hidden"
+    >
+      <!-- Header -->
+      <div
+        class="flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50 p-4 justify-between border-b border-primary/10"
+      >
+        <div
+          class="text-slate-900 dark:text-slate-100 flex size-10 items-center justify-center rounded-full hover:bg-primary/10 cursor-pointer"
+        >
+          <span class="material-symbols-outlined">arrow_back</span>
+        </div>
+        <h2
+          class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center"
+        >
+          Track Order
+        </h2>
+        <div class="flex w-10 items-center justify-end">
+          <button
+            class="flex items-center justify-center rounded-full size-10 bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+          >
+            <span class="material-symbols-outlined">chat_bubble</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col flex-1 overflow-y-auto pb-24">
+        <!-- Map Snippet -->
+        <div class="p-4">
+          <div
+            class="relative w-full aspect-[16/10] rounded-xl overflow-hidden shadow-sm border border-primary/10"
+          >
+            <div
+              class="absolute inset-0 bg-slate-200 dark:bg-slate-800 flex items-center justify-center"
+            >
+              <img
+                class="w-full h-full object-cover opacity-80"
+                data-alt="Map showing delivery route with orange path"
+                data-location="Austin, Texas"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvYJEb1moxc5l3z0URnHfxhp_F4iLV-I_Nml_bxg283AGRDhTzczuHBUZmedFU7pUp3kNyfgZTZgMmkjt_4sOUck806LDMUOJzx9H77Zo5lM5WqUkaXY55IZaNIgdnsb9NWwv3Dl5I-PoqoZfiVo5x364AOmiX8VvjEw0a8RUtMpS5VwpXZA_lKr0sCzlrc5JB0kep5al1dyyuzYnOcbwrXi8b1JtnB84y1jH_WxllB0IPh68igm6lURxP3U5ggZEowicpWrOFj776"
+              />
+              <!-- Simulated Courier Marker -->
+              <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center"
+              >
+                <div
+                  class="bg-primary p-1 rounded-full shadow-lg border-2 border-white"
+                >
+                  <span
+                    class="material-symbols-outlined text-white text-sm leading-none"
+                    >moped</span
+                  >
+                </div>
+                <div class="w-1 h-4 bg-primary/50 blur-[1px]"></div>
+              </div>
+            </div>
+            <div
+              class="absolute bottom-3 left-3 bg-white/90 dark:bg-background-dark/90 px-3 py-1.5 rounded-full text-xs font-bold text-primary shadow-sm border border-primary/10"
+            >
+              Arriving in 12 mins
+            </div>
+          </div>
+        </div>
+        <!-- Delivery Progress Section -->
+        <div class="flex flex-col gap-4 p-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-xl font-bold">In Progress</h3>
+              <p class="text-slate-500 text-sm">Order #CB-88219</p>
+            </div>
+            <div
+              class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-semibold"
+            >
+              50%
+            </div>
+          </div>
+          <div
+            class="relative h-2.5 w-full bg-primary/20 rounded-full overflow-hidden"
+          >
+            <div
+              class="absolute top-0 left-0 h-full bg-primary rounded-full"
+              style="width: 50%"
+            ></div>
+          </div>
+          <!-- Status Steps -->
+          <div class="grid grid-cols-[40px_1fr] gap-x-3 mt-2">
+            <!-- Step 1: Completed -->
+            <div class="flex flex-col items-center">
+              <div
+                class="bg-primary text-white rounded-full p-1 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-sm">check</span>
+              </div>
+              <div class="w-[2px] bg-primary h-8"></div>
+            </div>
+            <div class="flex flex-col pb-6">
+              <p
+                class="text-slate-900 dark:text-slate-100 font-semibold text-sm"
+              >
+                Order Received
+              </p>
+              <p class="text-slate-500 text-xs">12:30 PM</p>
+            </div>
+            <!-- Step 2: Completed -->
+            <div class="flex flex-col items-center">
+              <div
+                class="bg-primary text-white rounded-full p-1 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-sm">check</span>
+              </div>
+              <div class="w-[2px] bg-primary/30 h-8"></div>
+            </div>
+            <div class="flex flex-col pb-6">
+              <p
+                class="text-slate-900 dark:text-slate-100 font-semibold text-sm"
+              >
+                Preparing
+              </p>
+              <p class="text-slate-500 text-xs">12:45 PM</p>
+            </div>
+            <!-- Step 3: Active -->
+            <div class="flex flex-col items-center">
+              <div
+                class="bg-primary/10 text-primary border-2 border-primary rounded-full p-1 flex items-center justify-center animate-pulse"
+              >
+                <span class="material-symbols-outlined text-sm">moped</span>
+              </div>
+              <div class="w-[2px] bg-slate-200 dark:bg-slate-700 h-8"></div>
+            </div>
+            <div class="flex flex-col pb-6">
+              <p class="text-primary font-bold text-sm">Out for Delivery</p>
+              <p class="text-slate-500 text-xs">Driver is on the way</p>
+            </div>
+            <!-- Step 4: Pending -->
+            <div class="flex flex-col items-center">
+              <div
+                class="bg-slate-100 dark:bg-slate-800 text-slate-400 rounded-full p-1 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-sm">home</span>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-slate-400 font-medium text-sm">Delivered</p>
+              <p class="text-slate-400 text-xs">Waiting for drop off</p>
+            </div>
+          </div>
+        </div>
+        <!-- Courier Details -->
+        <div class="px-4 py-2">
+          <div
+            class="bg-white dark:bg-slate-800/50 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-4"
+          >
+            <img
+              class="size-14 rounded-full object-cover border-2 border-primary/20"
+              data-alt="Profile photo of delivery driver"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAj8AuKpx4gHCsrBe0a3Q7C053UpLTRcICRQylZJOX97znlJTDfn114gfcPLRWbUfSF3ohgAAeH_UdylXtntQeYLCIWClGXv0yWcpk9xbTOgNlkptn3EC76vz2l3MUWLKBaXh1_o6li4w5IGiw_Z15r_eN7ox4nQufqApQj0AAg-CjderJ1QsA80FpT_mNbk44iHJS2RXx5GaEvkWojs89NJuholzEN8ncYrq_Qb9Z9wq5jWfAV6pPnpETQ42pqAHC9fI0LKrWaKFY"
+            />
+            <div class="flex-1">
+              <p
+                class="text-xs text-slate-500 font-medium uppercase tracking-wider"
+              >
+                Your Courier
+              </p>
+              <p class="text-slate-900 dark:text-slate-100 font-bold">
+                Marcus Thompson
+              </p>
+              <div class="flex items-center gap-1">
+                <span
+                  class="material-symbols-outlined text-primary text-xs fill-1"
+                  >star</span
+                >
+                <span class="text-xs font-bold">4.9</span>
+                <span class="text-slate-400 text-xs">(2k+ deliveries)</span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <div
+                class="size-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 cursor-pointer"
+              >
+                <span class="material-symbols-outlined">call</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Order Summary -->
+        <div class="p-4">
+          <div
+            class="bg-white dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden"
+          >
+            <button
+              class="w-full flex items-center justify-between p-4 focus:outline-none"
+            >
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary"
+                  >receipt_long</span
+                >
+                <span class="font-bold">Order Summary</span>
+              </div>
+              <span class="material-symbols-outlined text-slate-400"
+                >keyboard_arrow_down</span
+              >
+            </button>
+            <div class="px-4 pb-4 space-y-3">
+              <div class="flex justify-between items-center text-sm">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold text-xs"
+                    >1x</span
+                  >
+                  <span class="text-slate-600 dark:text-slate-300"
+                    >Crave Burger XL</span
+                  >
+                </div>
+                <span class="font-medium">$12.90</span>
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold text-xs"
+                    >2x</span
+                  >
+                  <span class="text-slate-600 dark:text-slate-300"
+                    >Cheesy Fries</span
+                  >
+                </div>
+                <span class="font-medium">$8.00</span>
+              </div>
+              <div class="flex justify-between items-center text-sm">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold text-xs"
+                    >1x</span
+                  >
+                  <span class="text-slate-600 dark:text-slate-300"
+                    >Coke Zero (L)</span
+                  >
+                </div>
+                <span class="font-medium">$2.50</span>
+              </div>
+              <div class="h-px bg-slate-100 dark:bg-slate-700 my-2"></div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-500 text-sm">Delivery Fee</span>
+                <span class="text-sm font-medium">$1.50</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="font-bold">Total</span>
+                <span class="font-extrabold text-primary text-lg">$24.90</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Bottom Nav Bar -->
+      <div
+        class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-4 pb-6 pt-2 z-50"
+      >
+        <div class="flex gap-2 justify-around">
+          <a
+            class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400"
+            href="#"
+          >
+            <span class="material-symbols-outlined">home</span>
+            <p class="text-[10px] font-medium leading-normal">Home</p>
+          </a>
+          <a
+            class="flex flex-1 flex-col items-center justify-center gap-1 text-primary"
+            href="#"
+          >
+            <span class="material-symbols-outlined fill-1">receipt</span>
+            <p class="text-[10px] font-medium leading-normal">Orders</p>
+          </a>
+          <a
+            class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400"
+            href="#"
+          >
+            <span class="material-symbols-outlined">local_offer</span>
+            <p class="text-[10px] font-medium leading-normal">Offers</p>
+          </a>
+          <a
+            class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400"
+            href="#"
+          >
+            <span class="material-symbols-outlined">person</span>
+            <p class="text-[10px] font-medium leading-normal">Profile</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

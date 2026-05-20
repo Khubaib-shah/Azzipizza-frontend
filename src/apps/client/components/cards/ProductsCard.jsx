@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Context from "@shared/context/dataContext";
 import { toast } from "react-toastify";
 import { getOptimizedImageUrl } from "@shared/utils/cloudinary";
+import { Button } from "@shared/components/ui/button";
 const Modal = lazy(() => import("../Modal/Modal"));
 
 const ProductCard = memo(({ product }) => {
@@ -80,7 +81,7 @@ const ProductCard = memo(({ product }) => {
     <>
       {/* Compact Card */}
       <div
-        className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border border-gray-100 flex flex-col h-full transform-gpu hover:-translate-y-1 active:scale-95 will-change-transform"
+        className="group relative bg-white rounded-2xl shadow-sm lg:hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden border border-gray-100 flex flex-col h-full transform-gpu lg:hover:-translate-y-1 active:scale-95 will-change-transform"
         onClick={() => setIsModalOpen(true)}
         style={{ contain: "layout" }}
       >
@@ -105,27 +106,27 @@ const ProductCard = memo(({ product }) => {
             decoding="async"
             src={getOptimizedImageUrl(product.image, 400)}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-500 lg:group-hover:scale-110"
           />
 
-          {/* Quick View Overlay */}
-          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-            <button
-              className="bg-white text-gray-800 text-xs font-bold px-4 py-2 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 hover:bg-[var(--color-primary)] hover:text-white"
+          {/* Quick View Overlay (Desktop only) */}
+          <div className="absolute inset-0 bg-black/20 opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hidden lg:flex items-end justify-center pb-4">
+            <Button
+              className="bg-white text-gray-800 text-xs font-bold px-4 py-2 rounded-full shadow-lg transform translate-y-4 lg:group-hover:translate-y-0 transition-transform duration-300 hover:bg-[var(--color-primary)] hover:text-white border-none"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsModalOpen(true);
               }}
             >
               Quick View
-            </button>
+            </Button>
           </div>
         </div>
 
         {/* Content */}
         <div className="p-3 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-1">
-            <h3 className="font-bold text-gray-800 text-sm leading-tight line-clamp-1 group-hover:text-[var(--color-primary)] transition-colors">
+            <h3 className="font-bold text-gray-800 text-sm leading-tight line-clamp-1 lg:group-hover:text-[var(--color-primary)] transition-colors">
               {product.name}
             </h3>
             <div className="flex items-center gap-1 text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">
@@ -150,8 +151,8 @@ const ProductCard = memo(({ product }) => {
               </span>
             </div>
 
-            <button
-              className="bg-[var(--color-primary)] text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-black transition-colors shadow-sm"
+            <Button
+              className="bg-[var(--color-primary)] text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-black transition-colors shadow-sm p-0 border-none cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 setIsModalOpen(true);
@@ -159,7 +160,7 @@ const ProductCard = memo(({ product }) => {
               aria-label="Add to cart"
             >
               <FaPlus size={12} />
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -262,15 +263,15 @@ const ProductCard = memo(({ product }) => {
                       €{finalPrice.toFixed(2)}
                     </span>
                   </div>
-                  <button
+                  <Button
                     onClick={(e) => {
                       handleAddToCart(e);
                       setIsModalOpen(false);
                     }}
-                    className="flex-1 bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 hover:-translate-y-1 transition-all flex items-center justify-center gap-2"
+                    className="flex-1 bg-[var(--color-primary)] text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-red-200 lg:hover:-translate-y-1 transition-all flex items-center justify-center gap-2 border-none cursor-pointer"
                   >
                     <FaPlus size={16} /> Add to Order
-                  </button>
+                  </Button>
                 </div>
               </div>
             </motion.div>

@@ -7,8 +7,6 @@ import {
   useRef,
 } from "react";
 import { orderService } from "@shared/services";
-import { URL as BASE_URL } from "@shared/config/api"; // Keep for socket
-import io from "socket.io-client";
 import OrderSideBar from "../components/OrderSideBar";
 import { Search, RefreshCw, ShoppingBag, Loader2, Bell, BellOff, Send } from "lucide-react";
 import { Input } from "@shared/components/ui/input";
@@ -28,7 +26,9 @@ import ActiveOrderTable from "../components/ActiveOrderTable";
 import { reducer } from "@shared/utils/reducer";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
-import { playNotificationSound, subscribeToNotifications, showCoordinatedToast } from "@shared/utils/notification-utils";
+import { subscribeToNotifications } from "@shared/utils/notification-utils";
+import PageHeader from "@shared/components/ui/PageHeader";
+import { useAdminSocket } from "../context/AdminSocketContext";
 
 const ENABLE_SOCKET = import.meta.env.VITE_ENABLE_SOCKET === "true";
 
@@ -49,19 +49,7 @@ const Orders = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setNotifications } = useNotifications();
-  const [isAudioBlocked, setIsAudioBlocked] = useState(false);
-  const [isSocketConnected, setIsSocketConnected] = useState(false);
-  const socketRef = useRef(null);
-
-  const playAlert = useCallback(async () => {
-    try {
-      await playNotificationSound();
-      setIsAudioBlocked(false);
-    } catch (err) {
-      console.error("[Audio Playback Error]:", err);
-      setIsAudioBlocked(true);
-    }
-  }, []);
+  const { isConnected: isSocketConnected, registerListener, emit, playAlert, isAudioBlocked } = useAdminSocket();
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -89,80 +77,46 @@ const Orders = () => {
 
   useEffect(() => {
     fetchOrders();
+  }, [fetchOrders]);
 
-    if (ENABLE_SOCKET && !socketRef.current) {
-      socketRef.current = io(BASE_URL, {
-        transports: ["websocket", "polling"],
-        reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000
+  useEffect(() => {
+    const handleNewOrder = (newOrder) => {
+      if (!newOrder?._id) return;
+      setOrders((prev) => {
+        if (prev.some((o) => o._id === newOrder._id)) return prev;
+        return [newOrder, ...prev];
       });
+    };
 
-      const socket = socketRef.current;
+    const handleOrderUpdate = (updated) => {
+      if (!updated?._id) return;
+      setOrders((prev) =>
+        prev.map((o) => (o._id === updated._id ? updated : o))
+      );
+      setSelectedOrder((prev) => (prev?._id === updated._id ? updated : prev));
+    };
 
-      socket.on("connect", () => {
-        console.log("[Socket Connected]:", socket.id);
-        setIsSocketConnected(true);
-      });
+    const handleOrderDelete = (id) => {
+      if (!id) return;
+      setOrders((prev) => prev.filter((o) => o._id !== id));
+      setSelectedOrder((prev) => (prev?._id === id ? null : prev));
+    };
 
-      socket.on("disconnect", () => {
-        console.log("[Socket Disconnected]");
-        setIsSocketConnected(false);
-      });
+    const unbindNew = registerListener("order:new", handleNewOrder);
+    const unbindUpdate = registerListener("order:update", handleOrderUpdate);
+    const unbindDelete = registerListener("order:delete", handleOrderDelete);
 
-      socket.on("connect_error", (err) => {
-        console.error("[Socket Connection Error]:", err.message);
-        setIsSocketConnected(false);
-      });
+    const unsubscribe = subscribeToNotifications((payload) => {
+      console.log("[Orders]: Received broadcasted notification", payload);
+    });
 
-      const handleNewOrder = (newOrder) => {
-        if (!newOrder?._id) return;
-        setOrders((prev) => {
-          if (prev.some(o => o._id === newOrder._id)) return prev;
-          return [newOrder, ...prev];
-        });
-
-        setNotifications((n) => {
-          if (n.some(item => item.id === newOrder._id)) return n;
-          return [...n, { id: newOrder._id, message: "New Order!", items: newOrder }];
-        });
-        playAlert();
-        showCoordinatedToast("New order received!", toast.success);
-      };
-
-      const handleOrderUpdate = (updated) => {
-        if (!updated?._id) return;
-        setOrders(prev => prev.map(o => o._id === updated._id ? updated : o));
-        setSelectedOrder(prev => prev?._id === updated._id ? updated : prev);
-      };
-
-      const handleOrderDelete = (id) => {
-        if (!id) return;
-        setOrders(prev => prev.filter(o => o._id !== id));
-        setSelectedOrder(prev => prev?._id === id ? null : prev);
-      };
-
-      socket.on("order:new", handleNewOrder);
-      socket.on("order:update", handleOrderUpdate);
-      socket.on("order:delete", handleOrderDelete);
-
-      // Subscribe to cross-tab notifications (e.g. from FCM foreground)
-      const unsubscribe = subscribeToNotifications((payload) => {
-        console.log("[Orders]: Received broadcasted notification", payload);
-        // We could manually trigger a refresh or add to list here if needed,
-        // but Socket.IO usually handles the data. This is mostly for sound coordination.
-      });
-
-      return () => {
-        socket.off("order:new", handleNewOrder);
-        socket.off("order:update", handleOrderUpdate);
-        socket.off("order:delete", handleOrderDelete);
-        socket.disconnect();
-        socketRef.current = null;
-        unsubscribe();
-      };
-    }
-  }, [fetchOrders, setNotifications, playAlert]);
+    return () => {
+      unbindNew();
+      unbindUpdate();
+      unbindDelete();
+      unsubscribe();
+    };
+  }, [registerListener]);
 
   const filteredOrders = useMemo(() => {
     let result = [...orders];
@@ -195,7 +149,7 @@ const Orders = () => {
       setOrders(prev => prev.map(o => o._id === selectedOrder._id ? { ...o, eta: etaTime } : o));
       setSelectedOrder(prev => ({ ...prev, eta: etaTime }));
 
-      socketRef.current?.emit("order:update", { ...response.data.updatedOrder, eta: etaTime });
+      emit("order:update", { ...response.data.updatedOrder, eta: etaTime });
       toast.success("Order ETA updated.");
     } catch (err) {
       toast.error("Failed to update ETA.");
@@ -211,7 +165,7 @@ const Orders = () => {
       setOrders(prev => prev.map(o => o._id === orderId ? { ...o, orderStatus: newStatus } : o));
       if (selectedOrder?._id === orderId) setSelectedOrder(prev => ({ ...prev, orderStatus: newStatus }));
 
-      socketRef.current?.emit("order:update", { ...response.data.updatedOrder, orderStatus: newStatus });
+      emit("order:update", { ...response.data.updatedOrder, orderStatus: newStatus });
       toast.success(`Order status: ${newStatus}`);
     } catch (err) {
       toast.error("Failed to update status.");
@@ -226,7 +180,7 @@ const Orders = () => {
       await orderService.deleteOrder(orderId);
       setOrders(prev => prev.filter(o => o._id !== orderId));
       if (selectedOrder?._id === orderId) setSelectedOrder(null);
-      socketRef.current?.emit("order:delete", orderId);
+      emit("order:delete", orderId);
       toast.success("Order removed.");
     } catch (err) {
       toast.error("Failed to delete order.");
@@ -262,68 +216,45 @@ const Orders = () => {
 
 
       <div className="max-w-7xl mx-auto">
-        <header className="flex flex-col xl:flex-row xl:items-end justify-between mb-10 gap-8">
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <h1 className="!text-3xl sm:!text-4xl md:!text-5xl font-serif font-black !text-slate-900 tracking-tight">
-                Order <span className="text-red-600 italic underline underline-offset-8 decoration-red-600/20">Management</span>
-              </h1>
-
-              {ENABLE_SOCKET && (
-                <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.1em] border transition-all duration-500 flex items-center gap-2 ${isSocketConnected ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-red-50 text-red-600 border-red-100"}`}>
-                  <div className={`size-1.5 rounded-full ${isSocketConnected ? "bg-emerald-500 animate-pulse" : "bg-red-500"}`} />
-                  {isSocketConnected ? "Live" : "Offline"}
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="text-slate-500 !text-[12px] md:text-sm font-medium">
-                Manage your kitchen and track all orders.
-              </p>
-
-              <div className="h-4 w-px bg-slate-200 hidden sm:block" />
-
-              <div className="flex items-center gap-2">
-                {/* Push notification buttons removed */}
+        <PageHeader
+          title="Order Management"
+          subtitle="Manage your kitchen and track all orders."
+          actions={
+            <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center bg-white p-1.5 rounded-xl border border-slate-100 shadow-sm w-full xl:w-auto">
+              <div className="relative group flex-1 md:min-w-[220px]">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 group-focus-within:text-red-600 transition-colors" />
+                <Input
+                  type="search"
+                  placeholder="Track any order..."
+                  className="pl-10 w-full bg-slate-50 border-none rounded-lg focus-visible:ring-red-600/10 font-bold h-9 text-xs"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
+
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-full sm:w-36 bg-slate-50 border-none rounded-lg focus:ring-red-600/10 font-bold text-slate-700 h-9 px-3 text-xs">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-slate-100 shadow-2xl p-2 bg-white z-[60]">
+                  <SelectItem value="All Statuses" className="font-bold cursor-pointer h-9 px-3 text-xs">All Orders</SelectItem>
+                  {statusOptions.map((s) => (
+                    <SelectItem key={s} value={s} className="font-medium cursor-pointer h-9 px-3 text-xs">{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={refreshOrders}
+                className={`rounded-lg border-slate-100 h-9 w-9 hover:bg-slate-50 transition-all ${refreshing ? "animate-spin" : ""}`}
+              >
+                <RefreshCw className="h-3.5 w-3.5 text-slate-400" />
+              </Button>
             </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center bg-white p-2 rounded-2xl shadow-premium border border-slate-100/50 w-full xl:w-auto">
-            <div className="relative group flex-1 md:min-w-[280px]">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-red-600 transition-colors" />
-              <Input
-                type="search"
-                placeholder="Track any order..."
-                className="pl-12 w-full bg-slate-50 border-none rounded-xl focus-visible:ring-red-600/10 font-bold h-11 text-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-44 bg-slate-50 border-none rounded-xl focus:ring-red-600/10 font-bold text-slate-700 h-11 px-4 text-sm">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2 bg-white z-[60]">
-                <SelectItem value="All Statuses" className="font-bold cursor-pointer h-10 px-4">All Orders</SelectItem>
-                {statusOptions.map(s => (
-                  <SelectItem key={s} value={s} className="font-medium cursor-pointer h-10 px-4">{s}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={refreshOrders}
-              className={`rounded-xl border-slate-100 h-11 w-11 hover:bg-slate-50 transition-all ${refreshing ? "animate-spin" : ""}`}
-            >
-              <RefreshCw className="h-4 w-4 text-slate-400" />
-            </Button>
-          </div>
-        </header>
+          }
+        />
 
         <Tabs defaultValue="active" className="w-full" variant="line">
           <TabsList className="grid grid-cols-1 md:grid-cols-2 w-full md:w-fit h-auto gap-2 md:gap-0 mb-4 md:mb-8 p-1.5 bg-white rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-50">

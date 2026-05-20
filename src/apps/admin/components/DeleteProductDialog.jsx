@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "@shared/components/ui/Modal";
+import { Button } from "@shared/components/ui/button";
 
 const DeleteProductDialog = ({
   deleteDialogOpen,
@@ -18,16 +19,17 @@ const DeleteProductDialog = ({
           </p>
         </div>
         <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-100/50">
-          <button
+          <Button
             type="button"
+            variant="outline"
             className="cursor-pointer px-5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold transition-colors shadow-xs"
             onClick={() => setDeleteDialogOpen(false)}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className="cursor-pointer px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-bold transition-colors shadow-sm flex items-center justify-center gap-2"
+            className="cursor-pointer px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-sm font-bold transition-colors shadow-sm flex items-center justify-center gap-2 border-none"
             onClick={() => handleDelete(itemToDelete?._id)}
             disabled={loading}
           >
@@ -58,7 +60,7 @@ const DeleteProductDialog = ({
             ) : (
               "Delete Item"
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

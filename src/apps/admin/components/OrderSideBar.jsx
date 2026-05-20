@@ -131,7 +131,7 @@ const OrderSideBar = React.memo(
               className="fixed top-0 right-0 w-full sm:w-[500px] xl:w-96 h-screen bg-white shadow-2xl z-1000 flex flex-col border-l border-slate-100"
             >
               {/* Header */}
-              <header className="p-6 border-b border-slate-100 flex items-center justify-between gap-4 bg-white sticky top-0 z-10 transition-opacity">
+              <header className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between gap-4 bg-white sticky top-0 z-10 transition-opacity">
                 <div className="flex flex-col">
                   <h2 className="!text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
                     Order Details
@@ -146,7 +146,7 @@ const OrderSideBar = React.memo(
                     variant="outline"
                     size="icon"
                     onClick={() => sendOrderUpdate(selectedOrder, "confirmed")}
-                    className="h-10 w-10 rounded-xl border-slate-100 hover:bg-emerald-50 hover:text-emerald-600 transition-all text-slate-400"
+                    className="h-9 w-9 rounded-lg border-slate-100 hover:bg-emerald-50 hover:text-emerald-600 transition-all text-slate-400"
                     title="Notify Customer"
                   >
                     <Send className="h-4 w-4" />
@@ -155,7 +155,7 @@ const OrderSideBar = React.memo(
                     variant="ghost"
                     size="icon"
                     onClick={() => setSelectedOrder(null)}
-                    className="h-10 w-10 rounded-xl hover:bg-slate-100 text-slate-400"
+                    className="h-9 w-9 rounded-lg hover:bg-slate-100 text-slate-400"
                   >
                     <X className="h-5 w-5" />
                   </Button>
@@ -163,11 +163,11 @@ const OrderSideBar = React.memo(
               </header>
 
               {/* Body */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8">
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 space-y-6 sm:space-y-8">
                 {/* Summary */}
                 <section className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-100">
                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-1.5">
                         <CreditCardIcon className="size-3" /> Method
                       </p>
@@ -175,7 +175,7 @@ const OrderSideBar = React.memo(
                         {selectedOrder.paymentMethod?.toUpperCase()}
                       </p>
                     </div>
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div className="bg-slate-50 p-3 sm:p-4 rounded-xl border border-slate-100">
                       <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 flex items-center gap-1.5">
                         <Activity className="size-3" /> Status
                       </p>
@@ -187,7 +187,7 @@ const OrderSideBar = React.memo(
                     </div>
                   </div>
 
-                  <div className="bg-slate-900 p-6 rounded-3xl text-white shadow-xl">
+                  <div className="bg-slate-900 p-4 sm:p-6 rounded-2xl text-white shadow-xl">
                     {(() => {
                       const subtotal = selectedOrder.items.reduce(
                         (sum, item) =>
@@ -223,7 +223,7 @@ const OrderSideBar = React.memo(
                             <span className="text-[10px] font-black uppercase tracking-widest opacity-60">
                               Total Amount
                             </span>
-                            <span className="text-3xl font-serif font-black tracking-tighter">
+                            <span className="text-2xl sm:text-3xl font-serif font-black tracking-tighter">
                               €{total.toFixed(2)}
                             </span>
                           </div>
@@ -238,8 +238,8 @@ const OrderSideBar = React.memo(
                   <h4 className="text-[11px] font-black uppercase tracking-widest text-slate-900 ml-1">
                     Customer Profile
                   </h4>
-                  <Card className="border-none bg-slate-50 rounded-3xl overflow-hidden">
-                    <CardContent className="p-6 space-y-5">
+                  <Card className="border-none bg-slate-50 rounded-2xl overflow-hidden">
+                    <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-5">
                       <div className="flex items-start gap-4">
                         <div className="size-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-slate-400 border border-slate-100">
                           <UserCheck className="size-5" />
@@ -428,30 +428,30 @@ const OrderSideBar = React.memo(
               </div>
 
               {/* Actions */}
-              <footer className="p-6 border-t border-slate-100 space-y-4 bg-white sticky bottom-0">
+              <footer className="p-4 sm:p-5 border-t border-slate-100 space-y-2.5 sm:space-y-3 bg-white sticky bottom-0">
                 <div className="grid grid-cols-2 gap-3">
                   <Button
-                    className="w-full h-14 bg-slate-900 hover:bg-black text-white rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg"
+                    className="w-full h-10 sm:h-11 bg-slate-900 hover:bg-black text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-md border-none cursor-pointer"
                     onClick={handleUpdateOrder}
                     disabled={state.upLoading}
                   >
                     {state.upLoading ? (
-                      <Loader2 className="animate-spin size-4 mr-2" />
+                      <Loader2 className="animate-spin size-3.5 mr-1.5" />
                     ) : (
-                      <Save className="size-4 mr-2" />
+                      <Save className="size-3.5 mr-1.5" />
                     )}
                     Update <span className="hidden sm:inline">Order</span>
                   </Button>
                   <Button
                     variant="outline"
-                    className="w-full h-14 bg-white border-slate-100 rounded-2xl font-black text-xs uppercase tracking-widest text-slate-700 hover:bg-slate-50 transition-all"
+                    className="w-full h-10 sm:h-11 bg-white border border-solid border-slate-100 rounded-xl font-black text-xs uppercase tracking-widest text-slate-700 hover:bg-slate-50 transition-all cursor-pointer"
                     onClick={handlePrinterAnOrder}
                     disabled={state.punchLoading}
                   >
                     {state.punchLoading ? (
-                      <Loader2 className="animate-spin size-4 mr-2" />
+                      <Loader2 className="animate-spin size-3.5 mr-1.5" />
                     ) : (
-                      <Printer className="size-4 mr-2" />
+                      <Printer className="size-3.5 mr-1.5" />
                     )}
                     Print <span className="hidden sm:inline">Order</span>
                   </Button>
@@ -459,11 +459,11 @@ const OrderSideBar = React.memo(
 
                 <Button
                   variant="destructive"
-                  className="w-full h-14 bg-red-50 text-red-600 rounded-2xl font-black text-xs uppercase tracking-widest border border-red-100 hover:bg-red-600 hover:text-white transition-all shadow-none group"
+                  className="w-full h-10 sm:h-11 bg-red-50 text-red-600 rounded-xl font-black text-xs uppercase tracking-widest border border-solid border-red-100 hover:bg-red-600 hover:text-white transition-all shadow-none group cursor-pointer"
                   onClick={() => handleDeleteOrder(selectedOrder._id)}
                   disabled={state.delLoading}
                 >
-                  <Trash2 className="size-4 mr-2" />
+                  <Trash2 className="size-3.5 mr-1.5" />
                   {state.delLoading ? "Deleting..." : "Delete Order"}
                 </Button>
               </footer>

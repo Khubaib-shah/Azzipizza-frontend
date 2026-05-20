@@ -57,8 +57,5 @@ export const sanitizeMenuItem = (data) => {
     showInSpecialOffers: data.showInSpecialOffers === true || data.showInSpecialOffers === "true",
     showInChefsSpecials: data.showInChefsSpecials === true || data.showInChefsSpecials === "true",
     showInWeeklySpecials: data.showInWeeklySpecials === true || data.showInWeeklySpecials === "true",
-    specialOffersOrder: sanitizeNumeric(data.specialOffersOrder, 0),
-    chefsSpecialsOrder: sanitizeNumeric(data.chefsSpecialsOrder, 0),
-    weeklySpecialsOrder: sanitizeNumeric(data.weeklySpecialsOrder, 0),
   };
 };

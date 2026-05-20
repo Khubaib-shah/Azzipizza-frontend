@@ -9,16 +9,23 @@ const About = lazy(() => import("./apps/client/pages/About"));
 const Contact = lazy(() => import("./apps/client/pages/ContactUs"));
 const MyOrders = lazy(() => import("./apps/client/pages/MyOrders"));
 const Cart = lazy(() => import("./apps/client/pages/Cart"));
-const OrderSuccess = lazy(() => import("./apps/client/components/paymentPages/OrderSuccess"));
-const PaymentSuccess = lazy(() => import("./apps/client/components/paymentPages/PaymentSuccess"));
-const PaymentError = lazy(() => import("./apps/client/components/paymentPages/PaymentError"));
-const PaymentCancelled = lazy(() => import("./apps/client/components/paymentPages/PaymentCancelled"));
+const OrderSuccess = lazy(
+  () => import("./apps/client/components/paymentPages/OrderSuccess"),
+);
+const PaymentSuccess = lazy(
+  () => import("./apps/client/components/paymentPages/PaymentSuccess"),
+);
+const PaymentError = lazy(
+  () => import("./apps/client/components/paymentPages/PaymentError"),
+);
+const PaymentCancelled = lazy(
+  () => import("./apps/client/components/paymentPages/PaymentCancelled"),
+);
 
 // Admin App Components
 import AdminProtectedRoute from "./apps/admin/components/ProtectedRoute";
 const AdminLogin = lazy(() => import("./apps/admin/pages/Login"));
 const AdminOrders = lazy(() => import("./apps/admin/pages/Orders"));
-const AdminAddItems = lazy(() => import("./apps/admin/pages/AddItems"));
 const AdminListItems = lazy(() => import("./apps/admin/pages/ListItems"));
 const AdminNotFound = lazy(() => import("./apps/admin/pages/NotFound"));
 const AdminDashboard = lazy(() => import("./apps/admin/pages/Dashboard"));
@@ -31,7 +38,11 @@ const router = createBrowserRouter([
   // Client Routes
   {
     path: "/",
-    element: <div className="client-theme"><ClientApp /></div>,
+    element: (
+      <div className="client-theme">
+        <ClientApp />
+      </div>
+    ),
     children: [
       { path: "/", element: <Landing /> },
       { path: "menu", element: <Menu /> },
@@ -48,7 +59,11 @@ const router = createBrowserRouter([
   // Admin Routes
   {
     path: "/admin/login",
-    element: <div className="admin-theme"><AdminLogin /></div>,
+    element: (
+      <div className="admin-theme">
+        <AdminLogin />
+      </div>
+    ),
   },
   {
     path: "/admin",
@@ -64,7 +79,6 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <AdminDashboard /> },
       { path: "orders", element: <AdminOrders /> },
       { path: "reports", element: <AdminReports /> },
-      { path: "add-items", element: <AdminAddItems /> },
       { path: "list-items", element: <AdminListItems /> },
       { path: "*", element: <AdminNotFound /> },
     ],
@@ -72,7 +86,7 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <Navigate to="/" replace />,
-  }
+  },
 ]);
 
 export default router;

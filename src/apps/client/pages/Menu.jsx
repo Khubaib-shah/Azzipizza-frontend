@@ -97,7 +97,7 @@ function Menu() {
     if (!items) return [];
     return [...items]
       .filter((item) => item.showInWeeklySpecials)
-      .sort((a, b) => (a.weeklySpecialsOrder || 0) - (b.weeklySpecialsOrder || 0));
+      .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0));
   }, [items]);
 
   // Group by category (Optimized single-pass grouping)

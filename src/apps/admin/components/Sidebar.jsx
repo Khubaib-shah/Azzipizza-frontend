@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { List, ShoppingBag, ChevronDown, Menu, X, LogOut, LayoutDashboard, BarChart3 } from "lucide-react";
+import {
+  List,
+  ShoppingBag,
+  ChevronDown,
+  Menu,
+  X,
+  LogOut,
+  LayoutDashboard,
+  BarChart3,
+} from "lucide-react";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -25,22 +34,32 @@ const Sidebar = () => {
 
   const isActive = (path) => {
     if (path === "/admin" && location.pathname === "/admin") return true;
-    if (path === "/admin/dashboard" && location.pathname === "/admin/dashboard") return true;
+    if (path === "/admin/dashboard" && location.pathname === "/admin/dashboard")
+      return true;
     return location.pathname === path;
   };
 
   const menuItems = [
-    { title: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" />, path: "/admin/dashboard" },
-    { title: "Orders", icon: <ShoppingBag className="h-5 w-5" />, path: "/admin/orders" },
     {
-      title: "Menu Management",
-      icon: <List className="h-5 w-5" />,
-      submenu: [
-        { title: "Add Items", path: "/admin/add-items" },
-        { title: "List Items", path: "/admin/list-items" },
-      ],
+      title: "Dashboard",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      path: "/admin/dashboard",
     },
-    { title: "Reports", icon: <BarChart3 className="h-5 w-5" />, path: "/admin/reports" },
+    {
+      title: "Orders",
+      icon: <ShoppingBag className="h-5 w-5" />,
+      path: "/admin/orders",
+    },
+    {
+      title: "Menu Items",
+      icon: <List className="h-5 w-5" />,
+      path: "/admin/list-items",
+    },
+    {
+      title: "Reports",
+      icon: <BarChart3 className="h-5 w-5" />,
+      path: "/admin/reports",
+    },
   ];
   const logoutHandle = () => {
     localStorage.removeItem("isLoggedIn");
@@ -67,7 +86,8 @@ const Sidebar = () => {
 
       <aside
         className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-red-100 shadow-xl z-[1001] transition-transform duration-300 ease-in-out  
-          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0`}
       >
         <div className="flex flex-col h-full bg-linear-to-b from-white to-red-50/30">
@@ -90,20 +110,28 @@ const Sidebar = () => {
                           e.stopPropagation();
                           toggleSubmenu(item.title);
                         }}
-                        className={`flex items-center justify-between w-full p-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${openSubmenu === item.title
-                          ? "bg-red-600 text-white shadow-lg shadow-red-200"
-                          : "text-gray-700 hover:bg-red-50 hover:text-red-600"
-                          }`}
+                        className={`flex items-center justify-between w-full p-3 rounded-xl text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                          openSubmenu === item.title
+                            ? "bg-red-600 text-white shadow-lg shadow-red-200"
+                            : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+                        }`}
                       >
                         <div className="flex items-center gap-3">
-                          <span className={openSubmenu === item.title ? "text-white" : "text-red-500"}>
+                          <span
+                            className={
+                              openSubmenu === item.title
+                                ? "text-white"
+                                : "text-red-500"
+                            }
+                          >
                             {item.icon}
                           </span>
                           <span>{item.title}</span>
                         </div>
                         <ChevronDown
-                          className={`h-4 w-4 transition-transform duration-300 ${openSubmenu === item.title ? "rotate-180" : ""
-                            }`}
+                          className={`h-4 w-4 transition-transform duration-300 ${
+                            openSubmenu === item.title ? "rotate-180" : ""
+                          }`}
                         />
                       </button>
                       {openSubmenu === item.title && (
@@ -113,10 +141,11 @@ const Sidebar = () => {
                               <Link
                                 to={subItem.path}
                                 onClick={closeSidebar}
-                                className={`block p-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(subItem.path)
-                                  ? "text-red-600 bg-red-50/80 border-l-4 border-red-600"
-                                  : "text-gray-600 hover:bg-red-50 hover:text-red-500"
-                                  }`}
+                                className={`block p-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                  isActive(subItem.path)
+                                    ? "text-red-600 bg-red-50/80 border-l-4 border-red-600"
+                                    : "text-gray-600 hover:bg-red-50 hover:text-red-500"
+                                }`}
                               >
                                 {subItem.title}
                               </Link>
@@ -129,12 +158,17 @@ const Sidebar = () => {
                     <Link
                       to={item.path}
                       onClick={closeSidebar}
-                      className={`flex items-center gap-3 p-3 rounded-xl text-sm font-semibold transition-all duration-300 ${isActive(item.path)
-                        ? "bg-red-600 text-white shadow-lg shadow-red-200"
-                        : "text-gray-700 hover:bg-red-50 hover:text-red-600"
-                        }`}
+                      className={`flex items-center gap-3 p-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                        isActive(item.path)
+                          ? "bg-red-600 text-white shadow-lg shadow-red-200"
+                          : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+                      }`}
                     >
-                      <span className={isActive(item.path) ? "text-white" : "text-red-500"}>
+                      <span
+                        className={
+                          isActive(item.path) ? "text-white" : "text-red-500"
+                        }
+                      >
                         {item.icon}
                       </span>
                       <span>{item.title}</span>

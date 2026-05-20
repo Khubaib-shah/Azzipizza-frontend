@@ -12,22 +12,30 @@ function Landing() {
   const { items, isLoading } = useContext(Context);
   const [featuredItems, setFeaturedItems] = useState([]);
   const [specialOffers, setSpecialOffers] = useState([]);
+  const [weeklySpecials, setWeeklySpecials] = useState([]);
 
   useEffect(() => {
     if (items && items.length > 0) {
-      // Get items marked for special offers, sorted by specialOffersOrder ascending
+      // Get items marked for special offers, sorted by newest updated first
       const offers = items
         .filter((item) => item.showInSpecialOffers)
-        .sort((a, b) => (a.specialOffersOrder || 0) - (b.specialOffersOrder || 0))
+        .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
         .slice(0, 6);
       setSpecialOffers(offers);
 
-      // Get chef's special items, sorted by chefsSpecialsOrder ascending
+      // Get chef's special items, sorted by newest updated first
       const specials = items
         .filter((item) => item.showInChefsSpecials)
-        .sort((a, b) => (a.chefsSpecialsOrder || 0) - (b.chefsSpecialsOrder || 0))
+        .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
         .slice(0, 4);
       setFeaturedItems(specials);
+
+      // Get weekly special items, sorted by newest updated first
+      const weekly = items
+        .filter((item) => item.showInWeeklySpecials)
+        .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0))
+        .slice(0, 3);
+      setWeeklySpecials(weekly);
     }
   }, [items]);
 
@@ -117,6 +125,48 @@ function Landing() {
           </div>
         </section>
       )}
+
+      {/* Weekly Specials Section */}
+      {(isLoading || weeklySpecials.length > 0) && (
+        <section className="py-16 bg-gradient-to-br from-cream to-amber-50/50">
+          <div className="container mx-auto px-px md:px-4">
+            <SectionHeader
+              title="Weekly Specials"
+              subtitle="Taste something new this week with our unique, limited-time creations!"
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 mb-8">
+              {isLoading
+                ? [...Array(3)].map((_, index) => (
+                    <div key={index} className="animate-scale-in">
+                      <ProductCardSkeleton />
+                    </div>
+                  ))
+                : weeklySpecials.map((item, index) => (
+                    <div
+                      key={item._id}
+                      className="animate-scale-in"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <ProductCard product={item} />
+                    </div>
+                  ))}
+            </div>
+
+            {!isLoading && (
+              <div className="text-center">
+                <Link
+                  to="/menu"
+                  className="btn-accent !text-white inline-block text-sm md:text-lg md:px-8 !py-3 md:py-4"
+                >
+                  Order Weekly Specials →
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
 
       {/* Why Choose Us Section */}
       <section className="md:py-16 bg-gradient-to-br from-gray-50 to-white">

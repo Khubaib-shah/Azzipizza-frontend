@@ -63,17 +63,7 @@ export const validateMenuItem = (data) => {
     errors.description = "A short story of the taste is required.";
   }
 
-  if (data.specialOffersOrder && !validateNumericRange(data.specialOffersOrder, 0)) {
-    errors.specialOffersOrder = "Sort order must be 0 or greater.";
-  }
 
-  if (data.chefsSpecialsOrder && !validateNumericRange(data.chefsSpecialsOrder, 0)) {
-    errors.chefsSpecialsOrder = "Sort order must be 0 or greater.";
-  }
-
-  if (data.weeklySpecialsOrder && !validateNumericRange(data.weeklySpecialsOrder, 0)) {
-    errors.weeklySpecialsOrder = "Sort order must be 0 or greater.";
-  }
 
   return {
     isValid: Object.keys(errors).length === 0,

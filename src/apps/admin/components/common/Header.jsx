@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import NotificationBar from "../NotificationBar";
 import { baseUri } from "@shared/config/api";
 import ToggleButton from "../ToggleButton";
+import { useAdminSocket } from "../../context/AdminSocketContext";
 
 const Header = () => {
   const [restaurantOpen, setRestaurantOpen] = useState(false);
+  const { isConnected } = useAdminSocket();
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -27,7 +29,7 @@ const Header = () => {
     } catch (error) {
       console.error("Failed to update restaurant status:", error);
     } finally {
-    }
+      }
   };
 
   return (
@@ -40,8 +42,14 @@ const Header = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-4 md:gap-8">
-        <div className="px-4">
+      <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
+        {/* Connection Status Badge */}
+        <div className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.08em] border transition-all duration-500 flex items-center gap-1.5 ${isConnected ? "border-emerald-400/40 bg-emerald-500/10 text-emerald-300" : "border-red-400/40 bg-red-500/10 text-red-300"}`}>
+          <div className={`size-1.5 rounded-full ${isConnected ? "bg-emerald-400 animate-pulse" : "bg-red-400"}`} />
+          <span className="hidden xs:inline">{isConnected ? "Live" : "Offline"}</span>
+        </div>
+
+        <div className="px-1 sm:px-2">
           <ToggleButton restaurantOpen={restaurantOpen} toggleStatus={toggleStatus} />
         </div>
         <div className="bg-white/10 backdrop-blur-sm rounded-full p-1 border border-white/20 hover:bg-white/20 transition-all cursor-pointer">
