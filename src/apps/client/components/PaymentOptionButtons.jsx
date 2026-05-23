@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import QrCodeModal from "./Modal/QrCodeModal";
 import { CreditCard, Banknote, Smartphone } from "lucide-react";
-
+import { motion, AnimatePresence } from "framer-motion";
 export function PaymentModal({ isSubmitting, handleOrderSubmit, totalPrice }) {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [qrCodeModal, setQrCodeModal] = useState(false);
@@ -34,23 +34,50 @@ export function PaymentModal({ isSubmitting, handleOrderSubmit, totalPrice }) {
               key={option.value}
               onClick={() => setPaymentMethod(option.value)}
               disabled={isSubmitting}
-              className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all duration-200 relative cursor-pointer h-20 ${isSelected
+              className={`flex flex-col items-center justify-center rounded-2xl border-2 transition-all duration-200 relative cursor-pointer h-20 overflow-hidden ${isSelected
                 ? "border-orange-500 bg-white text-slate-800 shadow-sm outline-2 outline-offset-2 outline-orange-400/30"
                 : "border-gray-100 bg-white text-gray-500 hover:border-gray-200 hover:bg-gray-50"
-                }`}
+                } ${option.value === "scan" ? "p-0" : "p-3"}`}
               title={option.label}
             >
-              <Icon size={20} className={`mb-2 ${isSelected ? (option.value === 'scan' ? 'text-red-500' : 'text-slate-800') : "text-gray-400"}`} />
-              <span className={`font-bold text-[10px] leading-tight ${isSelected ? "text-slate-800" : "text-slate-700"}`}>{option.label}</span>
+              {option.value === "scan" ? (
+                <>
+                  {/* Mobile View */}
+                  <div className="flex sm:hidden flex-col items-center justify-center w-full h-full p-3">
+                    <Icon size={20} className={`mb-2 ${isSelected ? 'text-red-500' : "text-gray-400"}`} />
+                    <span className={`font-bold text-[10px] leading-tight ${isSelected ? "text-slate-800" : "text-slate-700"}`}>{option.label}</span>
+                  </div>
+                  {/* Desktop View */}
+                  <div className="hidden sm:flex w-full h-full items-center justify-center relative bg-white">
+                    {isSelected && qrCodeModal ? (
+                      <div className="w-full h-full bg-orange-50/50" />
+                    ) : (
+                      <motion.img 
+                        layoutId="satispay-qr"
+                        src="/QrCode.jpeg" 
+                        alt="Satispay" 
+                        className="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" 
+                      />
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Icon size={20} className={`mb-2 ${isSelected ? "text-slate-800" : "text-gray-400"}`} />
+                  <span className={`font-bold text-[10px] leading-tight ${isSelected ? "text-slate-800" : "text-slate-700"}`}>{option.label}</span>
+                </>
+              )}
             </button>
           );
         })}
       </div>
 
       {/* Show QR Code Inline if Satispay is selected */}
-      {qrCodeModal && (
-        <QrCodeModal totalPrice={totalPrice} setQrCodeModal={setQrCodeModal} />
-      )}
+      <AnimatePresence>
+        {qrCodeModal && (
+          <QrCodeModal totalPrice={totalPrice} setQrCodeModal={setQrCodeModal} />
+        )}
+      </AnimatePresence>
 
       <button
         onClick={() => handleOrderSubmit(paymentMethod)}
