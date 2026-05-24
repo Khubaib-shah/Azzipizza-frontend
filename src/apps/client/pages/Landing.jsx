@@ -10,6 +10,34 @@ import HeroSection from "../components/heroSection/HeroSection";
 import SectionHeader from "../components/SectionHeader";
 import { ChevronRight } from "lucide-react";
 
+import useEmblaCarousel from 'embla-carousel-react'
+import Autoplay from 'embla-carousel-autoplay'
+const testimonials = [
+  {
+    text: "Pizza arrived hot, crust perfect, and honestly exceeded my expectations completely. great",
+    img: "/testimonial/testimonial1.png",
+  },
+  {
+    text: "Family order was perfect, everyone loved the taste and quality was really good. delightful",
+    img: "/testimonial/testimonial2.png",
+  },
+  {
+    text: "Delivery was quick, pizza stayed hot and fresh just like straight from oven. amazing taste",
+    img: "/testimonial/testimonial3.png",
+  },
+  {
+    text: "Didn’t expect much but it turned out fresh, tasty and really well prepared pizza. perfecto",
+    img: "/testimonial/testimonial1.png",
+  },
+  {
+    text: "Small get-together order that impressed everyone with taste and overall quality. fantastic",
+    img: "/testimonial/testimonial2.png",
+  },
+  {
+    text: "Super fast delivery and pizza stayed hot, you can tell quality is never compromised. great",
+    img: "/testimonial/testimonial3.png",
+  },
+];
 function Landing() {
   const { items, isLoading } = useContext(Context);
   const [featuredItems, setFeaturedItems] = useState([]);
@@ -24,6 +52,19 @@ function Landing() {
   const tabsContainerRef = useRef(null);
   const intersectingSectionsRef = useRef(new Map());
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [emblaRef] = useEmblaCarousel(
+    {
+      loop: true,
+      align: "center",
+      containScroll: "trimSnaps",
+    },
+    [
+      Autoplay({
+        delay: 6000,
+        stopOnInteraction: false,
+      }),
+    ]
+  );
 
   const categoryNames = useMemo(
     () => (items ? [...new Set(items.map((item) => item.category))] : []),
@@ -131,16 +172,16 @@ function Landing() {
         if (changed) {
           let maxCategory = null;
           let maxHeight = -1;
-          
+
           intersectingSectionsRef.current.forEach((height, category) => {
-             if (height > maxHeight) {
-                maxHeight = height;
-                maxCategory = category;
-             }
+            if (height > maxHeight) {
+              maxHeight = height;
+              maxCategory = category;
+            }
           });
-          
+
           if (maxCategory) {
-             setActiveCategory((prev) => (prev !== maxCategory ? maxCategory : prev));
+            setActiveCategory((prev) => (prev !== maxCategory ? maxCategory : prev));
           }
         }
       },
@@ -171,7 +212,7 @@ function Landing() {
         const tabRect = activeTabEl.getBoundingClientRect();
         const scrollOffset = tabRect.left - containerRect.left;
         const targetScrollLeft = container.scrollLeft + scrollOffset - 12; // -12px for padding
-        
+
         container.scrollTo({
           left: targetScrollLeft,
           behavior: "smooth"
@@ -206,7 +247,7 @@ function Landing() {
   }, [items]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-cream to-white">
+    <div className="min-h-screen bg-gradient-to-b from-cream to-white overflow-hidden">
       {/* Hero Section */}
       <HeroSection />
 
@@ -217,11 +258,10 @@ function Landing() {
           <div>
             <div
               ref={filterBlockRef}
-              className={`backdrop-blur-md pointer-events-auto w-full max-w-full transition-all duration-300 ${
-                isFilterSticky
-                  ? "shadow-xl border-red-200"
-                  : ""
-              }`}
+              className={`backdrop-blur-md pointer-events-auto w-full max-w-full transition-all duration-300 ${isFilterSticky
+                ? "shadow-xl border-red-200"
+                : ""
+                }`}
             >
               <div className="px-2 py-1 sm:px-6 md:py-2">
                 <div className="grid grid-cols-1 gap-px md:gap-2">
@@ -244,7 +284,7 @@ function Landing() {
                       .no-scrollbar::-webkit-scrollbar { display: none; }
                       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
                     `}</style>
-                    <div 
+                    <div
                       ref={tabsContainerRef}
                       className="flex-1 overflow-x-auto no-scrollbar scroll-smooth"
                     >
@@ -254,11 +294,10 @@ function Landing() {
                             key={tab}
                             id={`tab-${tab}`}
                             onClick={() => handleLandingCategoryClick(tab)}
-                            className={`relative px-3 sm:px-5 py-2 text-xs sm:text-sm rounded-full uppercase whitespace-nowrap transition-colors outline-none ${
-                              activeCategory === tab
-                                ? "text-white border border-transparent"
-                                : "bg-white text-gray-700 border border-gray-200 hover:border-red-300 hover:text-red-600"
-                            }`}
+                            className={`relative px-3 sm:px-5 py-2 text-xs sm:text-sm rounded-full uppercase whitespace-nowrap transition-colors outline-none ${activeCategory === tab
+                              ? "text-white border border-transparent"
+                              : "bg-white text-gray-700 border border-gray-200 hover:border-red-300 hover:text-red-600"
+                              }`}
                             style={{ WebkitTapHighlightColor: "transparent" }}
                           >
                             {activeCategory === tab && (
@@ -273,7 +312,7 @@ function Landing() {
                         ))}
                       </div>
                     </div>
-                    
+
                     <button
                       onClick={() => setIsCategoryModalOpen(true)}
                       className="p-2.5 sm:p-3 bg-white border border-gray-200 rounded-full text-gray-600 shadow-sm shrink-0 hover:text-red-600 hover:border-red-300 transition-colors"
@@ -305,19 +344,19 @@ function Landing() {
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 mb-8">
               {isLoading
                 ? [...Array(3)].map((_, index) => (
-                    <div key={index} className="animate-scale-in">
-                      <ProductCardSkeleton />
-                    </div>
-                  ))
+                  <div key={index} className="animate-scale-in">
+                    <ProductCardSkeleton />
+                  </div>
+                ))
                 : specialOffers.map((item, index) => (
-                    <div
-                      key={item._id}
-                      className="animate-scale-in"
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <ProductCard product={item} />
-                    </div>
-                  ))}
+                  <div
+                    key={item._id}
+                    className="animate-scale-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <ProductCard product={item} />
+                  </div>
+                ))}
             </div>
 
             {!isLoading && (
@@ -350,19 +389,19 @@ function Landing() {
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-8">
               {isLoading
                 ? [...Array(4)].map((_, index) => (
-                    <div key={index} className="animate-slide-up">
-                      <ProductCardSkeleton />
-                    </div>
-                  ))
+                  <div key={index} className="animate-slide-up">
+                    <ProductCardSkeleton />
+                  </div>
+                ))
                 : featuredItems.map((item, index) => (
-                    <div
-                      key={item._id}
-                      className="animate-slide-up"
-                      style={{ animationDelay: `${index * 0.15}s` }}
-                    >
-                      <ProductCard product={item} />
-                    </div>
-                  ))}
+                  <div
+                    key={item._id}
+                    className="animate-slide-up"
+                    style={{ animationDelay: `${index * 0.15}s` }}
+                  >
+                    <ProductCard product={item} />
+                  </div>
+                ))}
             </div>
 
             {!isLoading && (
@@ -395,19 +434,19 @@ function Landing() {
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 mb-8">
               {isLoading
                 ? [...Array(3)].map((_, index) => (
-                    <div key={index} className="animate-scale-in">
-                      <ProductCardSkeleton />
-                    </div>
-                  ))
+                  <div key={index} className="animate-scale-in">
+                    <ProductCardSkeleton />
+                  </div>
+                ))
                 : weeklySpecials.map((item, index) => (
-                    <div
-                      key={item._id}
-                      className="animate-scale-in"
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <ProductCard product={item} />
-                    </div>
-                  ))}
+                  <div
+                    key={item._id}
+                    className="animate-scale-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <ProductCard product={item} />
+                  </div>
+                ))}
             </div>
 
             {!isLoading && (
@@ -538,53 +577,67 @@ function Landing() {
             subtitle="Don't just take our word for it"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
-            <div className="card-premium p-4 md:p-8">
-              <div className="flex mb-2 md:mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className="text-amber-400 text-sm md:text-xl"
-                  />
-                ))}
-              </div>
-              <p className="text-sm md:text-xs mb-4 italic">
-                "The best pizza in Bologna! The crust is perfect, ingredients
-                are fresh, and the flavors are incredible. Highly recommended!"
-              </p>
-              <p className="font-bold">- Marco R.</p>
-            </div>
+          {/* EMBLA */}
+          <div className="pt-8 lg:pt-12 px-6" ref={emblaRef}>
+            <div className="flex">
 
-            <div className="card-premium p-4 md:p-8">
-              <div className="flex mb-2 md:mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className="text-amber-400 text-sm md:text-xl"
-                  />
-                ))}
-              </div>
-              <p className="text-sm md:text-xs mb-4 italic">
-                "Authentic Italian pizza made with love. You can taste the
-                quality in every bite. Fast delivery too!"
-              </p>
-              <p className="font-bold">- Sofia M.</p>
-            </div>
+              {testimonials.map((t, i) => (
+                <div
+                  key={i}
+                  className="flex-[0_0_100%] md:flex-[0_0_33%] px-4"
+                >
+                  <div className="relative w-full max-w-md mx-auto bg-white shadow-sm rounded-2xl px-3 md:px-6 pt-16 pb-6">
 
-            <div className="card-premium p-4 md:p-8">
-              <div className="flex mb-2 md:mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className="text-amber-400 text-sm md:text-xl"
-                  />
-                ))}
-              </div>
-              <p className="text-sm md:text-xs mb-4 italic">
-                "Amazing pizza! The wood-fired oven makes all the difference.
-                This is now my go-to pizzeria!"
-              </p>
-              <p className="font-bold">- Luca B.</p>
+                    {/* Top Logo */}
+                    <div className="absolute left-1/2 -top-12 -translate-x-1/2">
+                      <div className="w-24 h-24 rounded-full bg-white p-px shadow-md">
+                        <img
+                          src={t.img}
+                          alt="Logo"
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Top Right Decor */}
+                    <div className="absolute -top-4 -right-12 md:-top-8 md:-right-10">
+                      <img
+                        src="/testimonial/decoration.png"
+                        alt=""
+                        className="size-24 md:size-34 object-contain rotate-12"
+                      />
+                    </div>
+
+                    {/* Bottom Left Decor */}
+                    <div className="absolute -bottom-8 md:-bottom-16 -left-12 md:-left-16">
+                      <img
+                        src="/testimonial/decoration.png"
+                        alt=""
+                        className="size-28 md:size-40 object-contain rotate-160"
+                      />
+                    </div>
+
+                    {/* Text */}
+                    <p className="text-sm text-center text-gray-600 leading-relaxed relative z-10">
+                      "{t.text}"
+                    </p>
+
+                    {/* Stars */}
+                    <div className="flex justify-center mt-2 md:mt-4 gap-1 relative z-10">
+                      {[...Array(5)].map((_, i) => (
+                        <span
+                          key={i}
+                          className="text-2xl text-[var(--color-primary)]"
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+
+                  </div>
+                </div>
+              ))}
+
             </div>
           </div>
         </div>
@@ -643,7 +696,7 @@ function Landing() {
             <div className="bg-white w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden relative z-10 flex flex-col max-h-[85vh]">
               <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 shrink-0">
                 <h3 className="font-bold text-lg text-gray-900">Menu Categories</h3>
-                <button 
+                <button
                   onClick={() => setIsCategoryModalOpen(false)}
                   className="p-2 text-gray-400 hover:bg-gray-200 hover:text-gray-700 rounded-full transition-colors"
                 >
@@ -658,11 +711,10 @@ function Landing() {
                       handleLandingCategoryClick(tab);
                       setIsCategoryModalOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-colors ${
-                      activeCategory === tab
-                        ? "bg-red-50 text-red-600 border border-red-100"
-                        : "bg-white text-gray-700 border border-gray-100 hover:bg-gray-50 hover:border-gray-300"
-                    }`}
+                    className={`w-full text-left px-4 py-3 rounded-xl font-medium transition-colors ${activeCategory === tab
+                      ? "bg-red-50 text-red-600 border border-red-100"
+                      : "bg-white text-gray-700 border border-gray-100 hover:bg-gray-50 hover:border-gray-300"
+                      }`}
                   >
                     {landingTabLabels[tab] || tab.toUpperCase()}
                   </button>
